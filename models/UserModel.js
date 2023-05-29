@@ -1,5 +1,4 @@
 import { Schema, model } from 'mongoose';
-import bcrypt from 'bcrypt';
 
 const userSchema = new Schema(
   {
@@ -20,6 +19,13 @@ const userSchema = new Schema(
       type: String,
       required: true,
       unique: true,
+      validate: {
+        validator: function (value) {
+          const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
+          return emailRegex.test(value);
+        },
+        message: 'Invalid email format',
+      },
     },
     password: {
       type: String,
@@ -52,6 +58,14 @@ const userSchema = new Schema(
       type: String,
       enum: ['USER', 'ADMIN'],
       default: 'USER',
+    },
+    otp: {
+      type: String,
+      required: true,
+    },
+    otpExpiration: {
+      type: Date,
+      required: true,
     },
   },
   { timestamps: true }
